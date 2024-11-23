@@ -1,0 +1,54 @@
+{% extends "accountsapp/base_home.html" %}
+{% load static %}
+{% block content %}
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-info">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+
+    <!-- Hero Section -->
+    <section id="hero" class="hero section light-background">
+      <img src="{% static 'assets/img/hero-bg.jpg' %}" alt="" data-aos="fade-in">
+      <div class="container position-relative">
+        <div class="welcome position-relative" data-aos="fade-down" data-aos-delay="100">
+          <h2>Welcome to MediLab</h2>
+          <p>Streamlining healthcare operations across hospitals and clinics
+              <br/>for a seamless patient experience.</p>
+        </div>
+        <!-- End Welcome -->
+        <div class="content row gy-4">
+          <div class="col-lg-4 d-flex align-items-stretch">
+            <div class="why-box" data-aos="zoom-out" data-aos-delay="200">
+              <h3>Why Choose MediLab?</h3>
+              <p>
+                Our comprehensive hospital management system integrates scheduling, patient records, billing, and operational workflows, ensuring efficiency and superior care delivery. Trusted by leading hospitals and clinics to enhance patient outcomes and optimize resource management.
+              </p>
+            </div>
+          </div>
+
+          <!-- End Why Box -->
+          <div class="col-lg-8 d-flex align-items-stretch">
+            <div class="d-flex flex-column justify-content-center">
+              <div class="row gy-4">
+                <div class="col-xl-4 d-flex align-items-stretch">
+                  <div class="icon-box" data-aos="zoom-out" data-aos-delay="300">
+                    <i class="bi bi-clipboard-data"></i>
+                    <h4>Easy Patient Access</h4>
+                    <p>Patients can register and access their medical history, book appointments, and receive updates seamlessly.</p>
+                    <a href="{% url 'patient_register' %}" class="cta-btn">Register as Patient</a>
+                  </div>
+                </div><!-- End Icon Box -->
+                <div class="col-xl-4 d-flex align-items-stretch">
+                  <div class="icon-box" data-aos="zoom-out" data-aos-delay="400">
+                    <i class="bi bi-gem"></i>
+                    <h4>Join Us</h4>
+                    <p>Join MediLab to manage patient records, appointments, and collaborate with healthcare teams effectively.</p>
+                    <a href="{% url 'doctor_register' %}" class="cta-btn">Register as Doctor</a>
+                  </div>
+                </div><!-- End Icon Box -->
+              </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}

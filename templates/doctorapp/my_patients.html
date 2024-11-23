@@ -1,0 +1,31 @@
+{% extends "doctorapp/base.html" %}
+{% block content %}
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-info">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+
+<h2 id="patients" class="mt-5">My Patients</h2>
+    <div class="row">
+        {% if patients %}
+        {% for patient in patients %}
+            <div class="col-md-4 mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ patient.name }}</h5>
+                        <h6 class="card-text">{{ patient.location }}</h6>
+                        <p class="card-text"></i> Contact: {{ patient.contact }}</p>
+                        <p class="card-text"><i class="bi bi-envelope"></i> Email: {{ patient.email }}</p>
+                        <a href="{% url 'doc_patient_detail' patient.id %}" class="btn btn-primary">View Details</a>
+                        <a href="{% url 'medical_history' patient.id %}" class="btn btn-success">Medical History</a>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+        {% else %}
+            <h6>No Patients</h6>
+        {% endif %}
+
+    </div>
+{% endblock %}

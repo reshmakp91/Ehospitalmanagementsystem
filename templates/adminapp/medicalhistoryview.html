@@ -1,0 +1,51 @@
+{% extends "adminapp/base.html" %}
+{% block content %}
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-info">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+
+    <h2>Medical Details</h2>
+    <table class="table table-danger table-striped">
+        <thead>
+            <tr>
+                <th>Sl No:</th>
+                <th>Appointment Date</th>
+                <th>Reason</th>
+                <th>Diagnosis</th>
+                <th>Treatment Description</th>
+                <th>Medication</th>
+                <th>Notes</th>
+
+            </tr>
+        </thead>
+        <tbody>
+            {% for entry in appointment_histories %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ entry.appointment.appointment_date|date }}</td>
+                    <td>{{ entry.appointment.reason }}</td>
+                    <td>{{ entry.history.diagnosis }}</td>
+                    <td>{{ entry.history.treatment_description }}</td>
+                    <td>
+                        {% if entry.prescriptions %}
+                            <ul>
+                                {% for prescription in entry.prescriptions %}
+                                    <li>
+                                        {{ prescription.medication }} -
+                                        {{ prescription.dosage }} -
+                                        {{ prescription.frequency }}
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        {% else %}
+                            No medication prescribed
+                        {% endif %}
+                    </td>
+                    <td>{{ entry.history.notes }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

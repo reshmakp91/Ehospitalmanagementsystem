@@ -1,0 +1,53 @@
+{% extends "adminapp/base.html" %}
+
+{% block content %}
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-info">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+    <h1>Add New Facility</h1>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="name">Name</label>
+            <input type="text" class="form-control" id="name" name="name" required>
+        </div>
+        <div class="form-group">
+            <label for="type">Type</label>
+            <select class="form-control" id="type" name="type" required>
+                <option value="Hospital">Hospital</option>
+                <option value="Clinic">Clinic</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="location">Location</label>
+            <input type="text" class="form-control" id="location" name="location" required>
+        </div>
+        <div class="form-group">
+            <label for="departments">Departments</label><br>
+            {% for value, label in facilityform.fields.departments.choices %}
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" id="department_{{ value }}" name="departments" value="{{ value }}"
+                    {% if value in facilityform.instance.departments %}checked{% endif %}>
+                    <label class="form-check-label" for="department_{{ value }}">{{ label }}</label>
+                </div>
+            {% endfor %}
+        </div>
+        <div class="form-group">
+            <label for="resources">Resources</label><br>
+            {% for value, label in facilityform.fields.resources.choices %}
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" id="resource_{{ value }}" name="resources" value="{{ value }}"
+                    {% if value in facilityform.instance.resources %}checked{% endif %}>
+                    <label class="form-check-label" for="resource_{{ value }}">{{ label }}</label>
+                </div>
+            {% endfor %}
+        </div>
+        <div class="form-group">
+            <label for="image">Facility Image</label>
+            <input type="file" class="form-control-file" id="image" name="image">
+        </div>
+        <button type="submit" class="btn btn-primary">Create Facility</button>
+    </form>
+{% endblock %}

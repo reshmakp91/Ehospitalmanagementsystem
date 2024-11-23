@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Make it responsive -->
+    <title>{{ article.title }}</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KyZXEJ3Q3g2q3l7w7bs1Aea3eNQWghchpmWmgzh5FdzlJ0eUojihO3T6wV3dOzpz" crossorigin="anonymous">
+
+    <!-- Optional Custom Styles -->
+    <style>
+        body {
+            background-color: #f8f9fa; /* Light background for better contrast */
+            font-family: 'Arial', sans-serif;
+        }
+
+        .container {
+            background-color: white; /* White background for article section */
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Add shadow for better visual appeal */
+            max-width: 1000px; /* Increased width for the container */
+            margin-top: 50px; /* Added margin to keep content away from the top */
+            margin-left: auto; /* Center-align horizontally */
+            margin-right: auto; /* Center-align horizontally */
+        }
+
+        .display-4 {
+            font-size: 2.5rem; /* Adjust title size for readability */
+            font-weight: bold;
+            color: #343a40; /* Dark color for contrast */
+            text-align: center;
+        }
+
+        .text-muted {
+            color: #6c757d; /* Lighter color for doctor's name and date */
+            text-align: center; /* Center align text */
+        }
+
+        .content {
+            line-height: 1.5;
+            color: #495057;
+            text-align: left;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+            border-color: #004085;
+        }
+
+        .img-fluid {
+            border-radius: 10px; /* Rounded corners for images */
+            max-height: 500px; /* Limit image height for consistency */
+            object-fit: cover; /* Ensure image covers space appropriately */
+            display: block; /* Ensure image is treated as a block element */
+            margin-left: auto; /* Center-align the image */
+            margin-right: auto; /* Center-align the image */
+        }
+
+        h4, h5 {
+            margin-bottom: 10px; /* Space between the doctor's name and the date */
+        }
+    </style>
+</head>
+<body style="background:MintCream">
+ <!-- Display success messages if any -->
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-info">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+
+    <div class="container mt-5">
+        <!-- Article Title -->
+        <h1 class="display-4">{{ article.title }}</h1>
+
+        <!-- Doctor's Name -->
+        <h4 class="text-muted">By {{ article.doctor }}</h4>
+
+        <!-- Date Uploaded -->
+        <h5 class="text-muted mb-4">Uploaded on {{ article.date_uploaded }}</h5>
+
+        <!-- Article Image -->
+        <img src="{{ article.image.url }}" class="img-fluid mb-4" alt="{{ article.title }}">
+
+        <!-- Article Content -->
+        <div class="content">
+            <p>{{ article.content|safe }}</p>
+        </div>
+
+        <!-- Back Button or Article List Link -->
+        <a href="{% url 'articles_list' %}" >Back to Articles</a>
+    </div>
+
+    <!-- Bootstrap JS (Optional, for interactive components if needed) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-pzjw8f+ua7Kw1TIq0KeK1dXvJ8blmn8J6B8wMflbQxk96JH66QnF6kKpjh1XdyDq" crossorigin="anonymous"></script>
+</body>
+</html>

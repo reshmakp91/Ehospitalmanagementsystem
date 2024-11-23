@@ -1,0 +1,96 @@
+{% extends "doctorapp/base.html" %}
+
+{% block content %}
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-info">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+
+    <div class="container mt-5">
+        <h1 class="mb-4 text-center text-primary">Appointment Details</h1>
+
+        <!-- Action Buttons -->
+        <div class="d-flex justify-content-between">
+            <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#editAppointmentModal">Edit Appointment</button>
+             <a href="{% url 'medical_history' appointment.patient.id %}" class="btn btn-primary">Medical History</a>
+        </div><br/>
+
+        <!-- Appointment Overview -->
+        <div class="card mb-4 shadow-sm">
+            <div class="card-header bg-danger text-white">
+                <h4 class="mb-0">Appointment Information</h4>
+            </div>
+            <div class="card-body">
+                <p><strong>Appointment Date: </strong> <span class="text-muted">{{ appointment.appointment_date|date:"F j, Y, g:i a" }}</span></p>
+                <p><strong>Status: </strong> <span class="badge {% if appointment.status == 'Scheduled' %}bg-info{% elif appointment.status == 'Completed' %}bg-success{% else %}bg-danger{% endif %}">{{ appointment.status }}</span></p>
+                <p><strong>Reason for Appointment: </strong><span>{{ appointment.reason }}</span></p>
+            </div>
+        </div>
+
+        <!-- Patient Details -->
+        <div class="card mb-4 shadow-sm">
+            <div class="card-header bg-success text-white">
+                <h4 class="mb-0">Patient Information</h4>
+            </div>
+            <div class="card-body">
+                <p><strong>Name: </strong> <span class="text-muted">{{ appointment.patient.name }}</span></p>
+                <p><strong>Date of Birth: </strong> <span class="text-muted">{{ appointment.patient.date_of_birth|date:"F j, Y" }}</span></p>
+                <p><strong>Gender: </strong> <span class="text-muted">{{ appointment.patient.gender }}</span></p>
+                <p><strong>Contact: </strong> <span class="text-muted">{{ appointment.patient.contact }}</span></p>
+                <p><strong>Email: </strong> <span class="text-muted">{{ appointment.patient.email }}</span></p>
+                <p><strong>Address: </strong><span class="text-muted">{{ appointment.patient.address }}</span></p>
+            </div>
+        </div>
+
+        <!-- Doctor Details -->
+        <div class="card mb-4 shadow-sm">
+            <div class="card-header bg-info text-white">
+                <h4 class="mb-0">Doctor Information</h4>
+            </div>
+            <div class="card-body">
+                <p><strong>Name:</strong> <span class="text-muted">{{ appointment.doctor.name }}</span></p>
+                <p><strong>Specialization:</strong> <span class="text-muted">{{ appointment.doctor.specialization }}</span></p>
+                <p><strong>Facility:</strong> <span class="text-muted">{{ appointment.doctor.facility }}</span></p>
+                <p><strong>Contact:</strong> <span class="text-muted">{{ appointment.doctor.contact }}</span></p>
+                <p><strong>Email:</strong> <span class="text-muted">{{ appointment.doctor.email }}</span></p>
+            </div>
+        </div>
+
+        <!-- Modal for Editing Appointment -->
+        <div class="modal fade" id="editAppointmentModal" tabindex="-1" aria-labelledby="editAppointmentModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editAppointmentModalLabel">Edit Appointment</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form method="POST" action="{% url 'doc_edit_appointment' appointment.id %}">
+                            {% csrf_token %}
+                            <div class="mb-3">
+                                <label for="patient_name" class="form-label">Patient : {{ appointment.patient.name }}</label>
+                            </div>
+                            <div class="mb-3">
+                                <label for="appointment_date" class="form-label">Appointment Date : {{ appointment.appointment_date|date:'Y-m-d\TH:i' }}</label>
+                            </div>
+                            <div class="mb-3">
+                                <label for="reason" class="form-label">Reason for Appointment : {{ appointment.reason }}</label>
+                            </div>
+                            <div class="mb-3">
+                                <label for="status" class="form-label">Status</label>
+                                <select class="form-select" id="status" name="status" required>
+                                    <option value="Scheduled" {% if appointment.status == 'Scheduled' %}selected{% endif %}>Schedule</option>
+                                    <option value="Completed" {% if appointment.status == 'Completed' %}selected{% endif %}>Completed</option>
+                                    <option value="Cancelled" {% if appointment.status == 'Cancelled' %}selected{% endif %}>Cancel</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Save Changes</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+{% endblock %}

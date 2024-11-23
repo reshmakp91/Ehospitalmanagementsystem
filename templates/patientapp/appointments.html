@@ -1,0 +1,42 @@
+{% extends "patientapp/base.html" %}
+{% block content %}
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-info">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+
+    <h2>Manage Appointment</h2>
+    <a href="{% url 'pat_new_appointment' %}" class="btn btn-primary mb-3">New Appointment</a>
+
+    <table class="table table-danger table-striped">
+        <thead>
+            <tr>
+                <th>Booking No:</th>
+                <th>Doctor</th>
+                <th>Facility</th>
+                <th>Appointment Date</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% if appointments %}
+                {% for appointment in appointments %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ appointment.doctor.name }}</td>
+                        <td>{{ appointment.doctor.facility.name }}</td>
+                        <td>{{ appointment.appointment_date }}</td>
+                        <td>{{ appointment.status }}</td>
+                        <td><a href="{% url 'pat_appointment_detail' appointment.id %}" class="btn btn-info">Details</a></td>
+                    </tr>
+                {% endfor %}
+            {% else %}
+                <tr>
+                    <td colspan="6" class="text-center">No Appointments Found</td>
+                </tr>
+            {% endif %}
+        </tbody>
+    </table>
+{% endblock %}

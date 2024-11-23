@@ -1,0 +1,84 @@
+{% extends 'accountsapp/base_home.html' %}
+{% load static %}
+{% block content %}
+ <!-- Display success messages if any -->
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-info">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-6">
+            <div class="card shadow-lg">
+                <div class="card-header bg-info text-white text-center">
+                    <h3 class="mb-0">Register as a Doctor</h3>
+                </div>
+                <div class="card-body">
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+
+                        <!-- Facility Field -->
+                        <div class="mb-3">
+                            <label for="id_facility" class="form-label">Facility</label>
+                            <select id="id_facility" name="facility" class="form-control" onchange="this.form.submit()">
+                                <option value="">Select a Facility</option>
+                                {% for facility in facilities %}
+                                <option value="{{ facility.id }}" {% if selected_facility == facility.id|stringformat:"s" %}selected{% endif %}>
+                                    {{ facility.name }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <!-- User Fields -->
+
+                        <div class="mb-3">
+                            <label for="id_username" class="form-label">Username</label>
+                            {{ user_form.username }}
+                        </div>
+                        <div class="mb-3">
+                            <label for="id_password1" class="form-label">Password</label>
+                            {{ user_form.password1 }}
+                        </div>
+                        <div class="mb-3">
+                            <label for="id_password2" class="form-label">Confirm Password</label>
+                            {{ user_form.password2 }}
+                        </div>
+
+                        <!-- Profile Fields (Excluding Facility and Specialization) -->
+                        {% for field in profile_form %}
+                            {% if field.name not in 'facility specialization' %}
+                                <div class="mb-3">
+                                    <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+                                    {{ field }}
+                                    {% if field.help_text %}
+                                        <small class="form-text text-muted">{{ field.help_text }}</small>
+                                    {% endif %}
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+
+                        <!-- Specialization Field -->
+                        <div class="mb-3">
+                            <label for="id_specialization" class="form-label">Specialization</label>
+                            {{ profile_form.specialization }}
+                        </div>
+
+                        <!-- Submit Button -->
+                        <center>
+                            <div class="form-group">
+                                <button type="submit" class="btn btn-success">Register</button>
+                            </div>
+                        </center>
+                    </form>
+                    <p class="text-center mt-3">
+                        Already have an account? <a href="{% url 'login' %}" class="text-primary">Login here</a>.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,88 @@
+{% extends "adminapp/base.html" %}
+{% block content %}
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-info">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+
+    <h2 id="doctors" class="mt-5">Doctors</h2>
+    <a href="{% url 'doctorcreate' %}" class="btn btn-primary mb-3">Add New Doctor</a>
+
+    <div class="row">
+        {% for doctor in doctors %}
+            <div class="col-md-4 mb-4">
+                <div class="card">
+                    <img src="{{ doctor.image.url }}" class="card-img-top" alt="{{ doctor.name }}" style="height: 200px; object-fit: contain;">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ doctor.name }}</h5>
+                        <span class="badge bg-primary">{{ doctor.specialization }}</span>
+                        <h6 class="card-text">{{ doctor.facility }}</h6>
+                        <p class="card-text mt-2"><i class="bi bi-telephone"></i> Contact: {{ doctor.contact }}</p>
+                        <p class="card-text"><i class="bi bi-envelope"></i> Email: {{ doctor.email }}</p>
+                        <div class="mt-4">
+                            <a href="#editDoctorModal{{ doctor.id }}" class="btn btn-success" data-bs-toggle="modal">Edit details</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal for Edit Details -->
+            <div class="modal fade" id="editDoctorModal{{ doctor.id }}" tabindex="-1" aria-labelledby="editDoctorModalLabel{{ doctor.id }}" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="editDoctorModalLabel{{ doctor.id }}">Edit Details</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form method="POST" enctype="multipart/form-data" action="{% url 'edit_doctor' doctor.id %}">
+                                {% csrf_token %}
+                                <div class="mb-3">
+                                    <label for="name{{ doctor.id }}" class="form-label">Name</label>
+                                    <input type="text" class="form-control" id="name{{ doctor.id }}" name="name" value="{{ doctor.name }}" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="specialization{{ doctor.id }}" class="form-label">Specialization</label>
+                                    <select name="specialization" id="specialization{{ doctor.id }}" class="form-control" required>
+                                        <option value="{{ doctor.specialization }}">{{ doctor.specialization }}</option>
+                                        {% for key, value in departments %}
+                                            <option value="{{ key }}">{{ value }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="facility{{ doctor.id }}">Facility</label>
+                                    <select class="form-control" id="facility{{ doctor.id }}" name="facility" required>
+                                        <option value="{{ doctor.facility.id }}">{{ doctor.facility.name }}</option>
+                                        {% for facility in facilities %}
+                                            <option value="{{ facility.id }}">{{ facility.name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="contact{{ doctor.id }}">Contact</label>
+                                    <input type="text" class="form-control" id="contact{{ doctor.id }}" name="contact" value="{{ doctor.contact }}" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="email{{ doctor.id }}">Email</label>
+                                    <input type="email" class="form-control" id="email{{ doctor.id }}" name="email" value="{{ doctor.email }}" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="image{{ doctor.id }}">Profile Picture</label>
+                                    <input type="file" class="form-control-file" id="image{{ doctor.id }}" name="image">
+                                    {% if doctor.image %}
+                                        <small class="form-text text-muted">Current file: {{ doctor.image.name }}</small>
+                                    {% else %}
+                                        <small class="form-text text-muted">No file chosen</small>
+                                    {% endif %}
+                                </div>
+                                <button type="submit" class="btn btn-primary">Save changes</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

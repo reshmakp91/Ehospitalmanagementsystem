@@ -1,0 +1,131 @@
+{% extends "adminapp/base.html" %}
+{% block content %}
+    <!-- Display Django Messages -->
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-info">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+
+    <!-- Patient Details Section -->
+    <div class="container mt-5">
+        <!-- Patient Card -->
+        <div class="card mb-4 shadow">
+            <div class="card-body">
+                <h1 class="display-4">{{ patient.name }}</h1>
+                <p class="text-muted"><strong>Address:</strong> {{ patient.address }}</p>
+                <p class="text-muted"><strong>Contact:</strong> {{ patient.contact }}</p>
+                <p class="text-muted"><strong>Email:</strong> {{ patient.email }}</p>
+                <p class="text-muted"><strong>Date of Birth:</strong> {{ patient.date_of_birth|date:"F j, Y" }}</p>
+                <p class="text-muted"><strong>Gender:</strong> {{ patient.gender }}</p>
+                <div class="mt-4">
+                    <a href="#" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#editPatientModal">Edit details</a>
+                    <a href="{% url 'medical_histories' patient.id %}" class="btn btn-info">View Medical History</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Appointments Section -->
+        <h2 class="text-primary mb-4">Appointments</h2>
+        {% if appointments %}
+            <div class="table-responsive">
+                <table class="table table-info table-striped">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Date</th>
+                            <th>Status</th>
+                            <th>Doctor</th>
+                            <th>Facility</th>
+                            <th>Reason</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for appointment in appointments %}
+                            {% if appointment.patient.id == patient.id %}
+                            <tr>
+                                <td>{{ appointment.appointment_date|date:"F j, Y, g:i a" }}</td>
+                                <td>
+                                    <span class="badge
+                                        {% if appointment.status == 'Scheduled' %} bg-info
+                                        {% elif appointment.status == 'Completed' %} bg-success
+                                        {% else %} bg-danger
+                                        {% endif %}">
+                                        {{ appointment.status }}
+                                    </span>
+                                </td>
+                                <td>{{ appointment.doctor.name }} - {{ appointment.doctor.specialization }}</td>
+                                <td>{{ appointment.doctor.facility }}</td>
+                                <td>{{ appointment.reason }}</td>
+                                <td>
+                                    <a href="{% url 'appointment_detail' appointment.id %}" class="btn btn-sm btn-outline-primary me-1">
+                                        <i class="bi bi-eye"></i> View
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endif %}
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <p class="text-muted">No appointments found for this patient.</p>
+        {% endif %}
+
+
+
+        <!-- Back Button -->
+        <div class="mt-4">
+            <a href="{% url 'patients' %}" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left"></i> Back to Patients List
+            </a>
+        </div>
+
+        <!-- Modal for Edit Details -->
+        <div class="modal fade" id="editPatientModal" tabindex="-1" aria-labelledby="editPatientModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editPatientModalLabel">Edit Details</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form method="POST" enctype="multipart/form-data" action="{% url 'edit_patient' patient.id %}">
+                            {% csrf_token %}
+                            <div class="mb-3">
+                                <label for="name" class="form-label">Name</label>
+                                <input type="text" class="form-control" id="name" name="name" value="{{ patient.name }}" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="date_of_birth">Date of Birth</label>
+                                <input type="date" class="form-control" id="date_of_birth" name="date_of_birth" value="{{ patient.date_of_birth|date:'Y-m-d' }}" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="gender">Gender</label>
+                                <select class="form-control" id="gender" name="gender" required>
+                                    <option value="{{ patient.gender }}">{{ patient.gender }}</option>
+                                    <option value="Male" >Male</option>
+                                    <option value="Female">Female</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="contact">Contact</label>
+                                <input type="text" class="form-control" id="contact" name="contact" value="{{ patient.contact }}" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="email">Email</label>
+                                <input type="email" class="form-control" id="email" name="email" value="{{ patient.email }}" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="address">Address</label>
+                                <textarea class="form-control" id="address" name="address" rows="3">{{ patient.address }}</textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Save changes</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

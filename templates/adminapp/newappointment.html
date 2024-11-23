@@ -1,0 +1,58 @@
+{% extends "adminapp/base.html" %}
+{% block content %}
+{% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-info">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+<h2>Create Appointment</h2>
+
+<form method="POST" action="{% url 'new_appointment' %}">
+    {% csrf_token %}
+
+    <!-- Patient Select -->
+    <div class="form-group">
+        <label for="patient">Patient</label>
+        <select name="patient" id="patient" class="form-control" required>
+            <option value="">Select Patient</option>
+            {% for patient in patients %}
+                <option value="{{ patient.id }}">{{ patient.name }}</option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <!-- Doctor Select -->
+    <div class="form-group">
+        <label for="doctor">Doctor</label>
+        <select name="doctor" id="doctor" class="form-control" required>
+            <option value="">Select Doctor</option>
+            {% for doctor in doctors %}
+                <option value="{{ doctor.id }}">{{ doctor.name }} - {{ doctor.specialization }}({{ doctor.facility.name }})</option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <!-- Additional Appointment Fields -->
+    <div class="form-group">
+        <label for="appointment_date">Appointment Date and Time</label>
+        <input type="datetime-local" name="appointment_date" id="appointment_date" class="form-control" required>
+    </div>
+
+    <div class="form-group">
+        <label for="reason">Reason for Appointment</label>
+        <textarea name="reason" id="reason" rows="3" class="form-control" required></textarea>
+    </div>
+
+    <div class="form-group">
+        <label for="status">Status</label>
+        <select name="status" id="status" class="form-control">
+            <option value="Scheduled">Scheduled</option>
+            <option value="Completed">Completed</option>
+            <option value="Cancelled">Cancelled</option>
+        </select>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Create Appointment</button>
+</form>
+
+{% endblock %}

@@ -1,0 +1,55 @@
+{% extends "doctorapp/base.html" %}
+{% block content %}
+<div class="container">
+    <!-- Display Django Messages -->
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-info">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+
+    <h1>Update Medical Details</h1>
+    <p><strong>Doctor:</strong> {{ doctor.name }}</p>
+    <p><strong>Patient:</strong> {{ appointment.patient.name }}</p>
+    <p><strong>Appointment Date:</strong> {{ appointment.appointment_date }}</p>
+    <p><strong>Reason : </strong>{{ appointment.reason }}</p>
+
+    <form method="post">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="diagnosis">Diagnosis:</label>
+            <input
+                type="text"
+                id="diagnosis"
+                name="diagnosis"
+                class="form-control"
+                value="{{ medical_history.diagnosis }}"
+                required
+            />
+        </div>
+
+        <div class="form-group">
+            <label for="treatment_description">Treatment Description:</label>
+            <textarea
+                id="treatment_description"
+                name="treatment_description"
+                class="form-control"
+                rows="5"
+                required>{{ medical_history.treatment_description }}</textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="notes">Notes:</label>
+            <textarea
+                id="notes"
+                name="notes"
+                class="form-control"
+                rows="5"
+                required>{{ medical_history.notes }}</textarea>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Save</button>
+        <a href="{% url 'medical_history' appointment.patient.id %}" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+{% endblock %}

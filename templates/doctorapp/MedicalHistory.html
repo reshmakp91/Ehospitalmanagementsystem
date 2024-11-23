@@ -1,0 +1,108 @@
+{% extends "doctorapp/base.html" %}
+{% block content %}
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-info">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+
+    <h2>Manage Medical Details</h2>
+    <table class="table table-danger table-striped">
+        <thead>
+            <tr>
+                <th>Sl No:</th>
+                <th>Appointment Date</th>
+                <th>Reason</th>
+                <th>Diagnosis</th>
+                <th>Treatment Description</th>
+                <th>Medication</th>
+                <th>Notes</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for entry in appointment_histories %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ entry.appointment.appointment_date|date }}</td>
+                    <td>{{ entry.appointment.reason }}</td>
+                    <td>{{ entry.history.diagnosis }}</td>
+                    <td>{{ entry.history.treatment_description }}</td>
+                    <td>
+                        {% if entry.prescriptions %}
+                            <ul>
+                                {% for prescription in entry.prescriptions %}
+                                    <li>
+                                        {{ prescription.medication }} -
+                                        {{ prescription.dosage }} -
+                                        {{ prescription.frequency }}
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        {% else %}
+                            No medication prescribed
+                        {% endif %}
+                        <center><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editModal{{ forloop.counter }}">
+                            Edit Medicine
+                        </button></center>
+                    </td>
+                    <td>{{ entry.history.notes }}</td>
+                    <td>
+                        <a href="{% url 'update_medical' entry.appointment.id %}" class="btn btn-success">Update</a>
+                    </td>
+                </tr>
+
+                <!-- Modal -->
+                <div class="modal fade" id="editModal{{ forloop.counter }}" tabindex="-1" aria-labelledby="editModalLabel{{ forloop.counter }}" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="editModalLabel{{ forloop.counter }}">Edit Prescription</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <form method="post" action="{% url 'edit_prescription' entry.appointment.id %}">
+                                {% csrf_token %}
+                                <div class="modal-body">
+                                    <div class="mb-3">
+                                        <label for="medication" class="form-label">Medication</label>
+                                        <input
+                                            type="text"
+                                            class="form-control"
+                                            id="medication{{ forloop.counter }}"
+                                            name="medication"
+                                            value="{% if entry.prescriptions|length > 0 %}{{ entry.prescriptions.0.medication }}{% endif %}"
+                                            required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="dosage" class="form-label">Dosage</label>
+                                        <input
+                                            type="text"
+                                            class="form-control"
+                                            id="dosage{{ forloop.counter }}"
+                                            name="dosage"
+                                            value="{% if entry.prescriptions|length > 0 %}{{ entry.prescriptions.0.dosage }}{% endif %}"
+                                            required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="frequency" class="form-label">Frequency</label>
+                                        <input
+                                            type="text"
+                                            class="form-control"
+                                            id="frequency{{ forloop.counter }}"
+                                            name="frequency"
+                                            value="{% if entry.prescriptions|length > 0 %}{{ entry.prescriptions.0.frequency }}{% endif %}"
+                                            required>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

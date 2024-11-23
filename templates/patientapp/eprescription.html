@@ -1,0 +1,48 @@
+{% extends "patientapp/base.html" %}
+{% block content %}
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-info">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+
+    <h2>Manage Medications</h2>
+    <table class="table table-danger table-striped">
+        <thead>
+            <tr>
+                <th>Sl No</th>
+                <th>Appointment Date</th>
+                <th>Doctor Name</th>
+                <th>Diagnosis</th>
+                <th>Medicine</th>
+                <th>Dosage</th>
+                <th>Frequency</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in data %}
+                {% for prescription in item.prescriptions %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ item.appointment.appointment_date }}</td>
+                        <td>{{ item.appointment.doctor.name }}</td>
+                        <td>
+                            {% if item.medical_history %}
+                                {{ item.medical_history.diagnosis }}
+                            {% else %}
+                                Not Available
+                            {% endif %}
+                        </td>
+                        <td>{{ prescription.medication }}</td>
+                        <td>{{ prescription.dosage }}</td>
+                        <td>{{ prescription.frequency }}</td>
+                    </tr>
+                {% endfor %}
+            {% empty %}
+                <tr>
+                    <td colspan="8" class="text-center">No data available</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

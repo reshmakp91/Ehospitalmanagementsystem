@@ -1,0 +1,84 @@
+{% extends "pharmacyapp/base.html" %}
+{% block content %}
+    <!-- Display success messages if any -->
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-info">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+
+        <!-- Main Content -->
+        <div id="page-content-wrapper" class="w-100">
+            <div class="container mt-5">
+                <h2 class="mb-4">Prescriptions</h2>
+                <table class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>Sl No</th>
+                            <th>Medicine</th>
+                            <th>Dosage</th>
+                            <th>Doctor</th>
+                            <th>Date</th>
+                            <th>Patient</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in pharmacy_list %}
+                            <tr>
+                                <td>{{ forloop.counter }}</td>
+                                <td>{{ item.prescription.medication }}</td>
+                                <td>{{ item.prescription.dosage }}</td>
+                                <td>{{ item.prescription.doctor }}</td>
+                                <td>{{ item.prescription.prescribed_date }}</td>
+                                <td>{{ item.prescription.patient }}</td>
+                                <td>{{ item.availability_status }}</td>
+                                <td>
+                                    <!-- Trigger Modal -->
+                                    <a href="#" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#updateStatusModal-{{ item.id }}">
+                                        Update Status
+                                    </a>
+                                </td>
+                            </tr>
+                        {% empty %}
+                            <tr>
+                                <td colspan="8" class="text-center">No medications found</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for Updating Status -->
+    {% for item in pharmacy_list %}
+    <div class="modal fade" id="updateStatusModal-{{ item.id }}" tabindex="-1" aria-labelledby="updateStatusModalLabel-{{ item.id }}" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="updateStatusModalLabel-{{ item.id }}">Update Medication Status</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form action="{% url 'update_medication_status' item.id %}" method="POST">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="status-{{ item.id }}" class="form-label">Availability Status</label>
+                            <select class="form-select" id="status-{{ item.id }}" name="status">
+                                <option value="In-stock" {% if item.availability_status == "In-stock" %}selected{% endif %}>In-stock</option>
+                                <option value="out-of-stock" {% if item.availability_status == "out-of-stock" %}selected{% endif %}>out-of-stock</option>
+                            </select>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Save changes</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+{% endblock %}

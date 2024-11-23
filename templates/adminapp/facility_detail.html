@@ -1,0 +1,120 @@
+{% extends "adminapp/base.html" %}
+{% block content %}
+    <!-- Display success messages if any -->
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-info">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+
+    <!-- Facility Details -->
+    <div class="container mt-5">
+        <!-- Facility Header -->
+        <div class="text-center mb-4">
+            <h1 class="display-4">{{ facility.name }}</h1>
+            <p class="text-muted"><strong>Location:</strong> {{ facility.location }}</p>
+            <a href="#editFacilityModal" class="btn btn-success" data-bs-toggle="modal">Edit Facility Details</a>
+        </div>
+
+        <!-- Facility Departments -->
+        <h3 class="mb-3">Departments</h3>
+        <ul class="list-group mb-5">
+            {% for department in facility.departments %}
+                <li class="list-group-item">{{ department }}</li>
+            {% endfor %}
+        </ul>
+
+        <!-- Facility Resources -->
+        <h3 class="mb-3">Resources</h3>
+        <ul class="list-group mb-5">
+            {% for resource in facility.resources %}
+                <li class="list-group-item">{{ resource }}</li>
+            {% endfor %}
+        </ul>
+
+        <!-- Doctors Section -->
+        <h3 class="mb-3">Our Doctors</h3>
+        <div class="row">
+            {% for doctor in doctors %}
+                {% if doctor.facility.id == facility.id %}
+                    <div class="col-lg-4 col-md-6 mb-4">
+                        <div class="card h-100 shadow-sm">
+                            <!-- Doctor Image -->
+                            <img src="{{ doctor.image.url }}" class="card-img-top" alt="Doctor Image" style="height: 200px; object-fit: contain;">
+                            <!-- Doctor Details -->
+                            <div class="card-body">
+                                <h5 class="card-title">{{ doctor.name }}</h5>
+                                <p class="badge bg-primary">{{ doctor.specialization }}</p>
+                                <p class="card-text mt-2"><i class="bi bi-telephone"></i>Contact : {{ doctor.contact }}</p>
+                                <p class="card-text"><i class="bi bi-envelope"></i>Email : {{ doctor.email }}</p>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+
+        <!-- Facility Details Modal -->
+        <div class="modal fade" id="editFacilityModal" tabindex="-1" aria-labelledby="editFacilityModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Edit Facility Details</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form method="POST" enctype="multipart/form-data" action="{% url 'edit_facility' facility.id %}">
+                            {% csrf_token %}
+                            <div class="mb-3">
+                                <label for="name" class="form-label">Name</label>
+                                <input type="text" class="form-control" id="name" name="name" value="{{ facility.name }}" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="type">Type</label>
+                                <select class="form-control" id="type" name="type">
+                                    <option value="Hospital" {% if facility.type == "Hospital" %}selected{% endif %}>Hospital</option>
+                                    <option value="Clinic" {% if facility.type == "Clinic" %}selected{% endif %}>Clinic</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="location">Location</label>
+                                <input type="text" class="form-control" id="location" name="location" value="{{ facility.location }}" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="departments" class="form-label">Departments</label>
+                                <select multiple class="form-control" id="departments" name="departments">
+                                    {% for id, name in departments %}
+                                        <option value="{{ id }}" {% if id in selected_departments %}selected{% endif %}>
+                                            {{ name }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="resources" class="form-label">Resources</label>
+                                <select multiple class="form-control" id="resources" name="resources">
+                                    {% for id,name in resources %}
+                                        <option value="{{ id }}" {% if id in selected_resources %}selected{% endif %}>
+                                            {{ name }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="image">Facility Image</label>
+                                <input type="file" class="form-control-file" id="image" name="image">
+                                {% if facility.image %}
+                                    <small class="form-text text-muted">Current file: {{ facility.image.name }}</small>
+                                {% else %}
+                                    <small class="form-text text-muted">No file chosen</small>
+                                {% endif %}
+                            </div>
+
+                            <button type="submit" class="btn btn-primary">Save changes</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

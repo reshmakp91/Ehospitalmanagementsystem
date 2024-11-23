@@ -1,0 +1,81 @@
+{% extends "doctorapp/base.html" %}
+{% block content %}
+    <!-- Display Django Messages -->
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-info">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+
+    <!-- Patient Details Section -->
+    <div class="container mt-5">
+        <!-- Patient Card -->
+        <div class="card mb-4 shadow">
+            <div class="card-body">
+                <h1 class="display-4">{{ patient.name }}</h1>
+                <p class="text-muted"><strong>Address:</strong> {{ patient.address }}</p>
+                <p class="text-muted"><strong>Contact:</strong> {{ patient.contact }}</p>
+                <p class="text-muted"><strong>Email:</strong> {{ patient.email }}</p>
+                <p class="text-muted"><strong>Date of Birth:</strong> {{ patient.date_of_birth|date:"F j, Y" }}</p>
+                <p class="text-muted"><strong>Gender:</strong> {{ patient.gender }}</p>
+            </div>
+        </div>
+
+        <!--Medical_history, prescription & treatment plan -->
+
+
+
+        <!-- Appointments Section -->
+        <h2 class="text-primary mb-4">Appointments</h2>
+        {% if appointments %}
+            <div class="table-responsive">
+                <table class="table table-info table-striped">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Date</th>
+                            <th>Status</th>
+                            <th>Doctor</th>
+                            <th>Facility</th>
+                            <th>Reason</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for appointment in appointments %}
+                            {% if appointment.patient.id == patient.id %}
+                            <tr>
+                                <td>{{ appointment.appointment_date|date:"F j, Y, g:i a" }}</td>
+                                <td>
+                                    <span class="badge
+                                        {% if appointment.status == 'Scheduled' %} bg-info
+                                        {% elif appointment.status == 'Completed' %} bg-success
+                                        {% else %} bg-danger
+                                        {% endif %}">
+                                        {{ appointment.status }}
+                                    </span>
+                                </td>
+                                <td>{{ appointment.doctor.name }} - {{ appointment.doctor.specialization }}</td>
+                                <td>{{ appointment.doctor.facility }}</td>
+                                <td>{{ appointment.reason }}</td>
+                                <td>
+                                    <a href="{% url 'doc_appointment_detail' appointment.id %}" class="btn btn-sm btn-outline-primary me-1">
+                                        <i class="bi bi-eye"></i> View
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endif %}
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <p class="text-muted">No appointments found for this patient.</p>
+        {% endif %}
+        <!-- Back Button -->
+        <div class="mt-4">
+            <a href="{% url 'my_patients' %}" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left"></i> Back to Patients List
+            </a>
+        </div>
+    </div>
+{% endblock %}
