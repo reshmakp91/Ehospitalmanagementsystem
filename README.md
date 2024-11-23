@@ -47,4 +47,35 @@ The E-Hospital Management System (EHMS) is a comprehensive web application desig
 - Hosted on [PythonAnywhere](https://www.pythonanywhere.com/)
 
 ---
+## Username and Passwords
+
+### **Admin:**
+- username : admin123, password: admin123
+- 
+### **Pharmacy:**
+- username : pharmacy1, password: pharmacy1
+
+### **Doctors:**
+- username : johnmathew, password: johnmathew
+- username : priya123, password: priya123
+- username : arunkumar, password: arunkumar
+- username : meerajos, password: meerajos
+- username : sunilpaul, password: sunilpaul
+- username : rekha123, password: rekha123
+- username : noblethomas, password: noblethomas
+- username : sangeetha, password: sangeetha
+- username : anagha, password: anagha
+- username : vivek123, password: vivek123
+- username : sooraj123, password: sooraj123
+
+### **Patients:**
+- username : anilkumar, password: anilkumar
+- username : vishnu123, password: vishnu123
+- username : arun123, password: arun123
+- username : reshma123, password: reshma123
+- username : remya123, password: remya123
+
+  
+  
+
 
