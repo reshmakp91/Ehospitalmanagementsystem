@@ -16,9 +16,9 @@
             <label for="specialization">Specialization</label>
             <select class="form-control" id="specialization" name="specialization" required>
                 <option value="">Select Specialization</option>
-                {% for key, value in specializations %}
-                    <option value="{{ key }}">{{ value }}</option>
-                {% endfor %}
+                    {% for specialization in specializations %}
+                        <option value="{{ specialization.0 }}">{{ specialization.1 }}</option>
+                    {% endfor %}
             </select>
         </div>
         <div class="form-group">

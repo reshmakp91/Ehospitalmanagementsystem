@@ -195,7 +195,7 @@ def upload_article(request):
             article.doctor = doctor
             article.save()
             messages.success(request,'New Article Uploaded Successfully')
-            return redirect('articles')
+            return redirect('articles_list')
         else:
             messages.error(request, "Error uploading article.")
     else:

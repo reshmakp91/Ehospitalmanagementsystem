@@ -58,18 +58,31 @@ def patientcreate(request):
         patientform = PatientProfileForm()
     return render(request, 'adminapp/PatientCreate.html', {'patientform': patientform})
 
+
 @admin_required
 def doctorcreate(request):
+    specializations = DEPARTMENT_CHOICES
+    facilities = Facility.objects.all()
+    selected_facility = request.POST.get('facility')  # Get selected facility from form data
+
     if request.method == 'POST':
-        doctorform = DoctorProfileForm(request.POST,request.FILES)
+        doctorform = DoctorProfileForm(request.POST, request.FILES, selected_facility=selected_facility)
+        print("Available choices:", doctorform.fields['specialization'].choices)  # Debugging line
+
         if doctorform.is_valid():
             doctorform.save()
             messages.success(request, 'Form submitted successfully')
+        else:
+            messages.error(request, f'Error: {doctorform.errors}')
     else:
-        doctorform = DoctorProfileForm()
-    specializations = DEPARTMENT_CHOICES
-    facilities = Facility.objects.all()
-    return render(request,'adminapp/DoctorCreate.html',{'doctorform' : doctorform, 'specializations': specializations,'facilities':facilities})
+        doctorform = DoctorProfileForm(selected_facility=None)  # Ensure this is set
+
+    return render(request, 'adminapp/DoctorCreate.html', {
+        'doctorform': doctorform,
+        'specializations': specializations,
+        'facilities': facilities
+    })
+
 
 @admin_required
 def facilitycreate(request):
